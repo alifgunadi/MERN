@@ -1,0 +1,13 @@
+.product--image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    padding-top: 50px;
+}
+
+.product {
+    border-radius: 5px;
+    width: 550px;
+    object-fit: cover;
+}

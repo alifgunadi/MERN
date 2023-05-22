@@ -1,0 +1,26 @@
+.login__image--container {
+    background-image: url('https://img.freepik.com/free-vector/mobile-login-concept-illustration_114360-83.jpg?w=2000');
+    height: cover;
+    width: cover;
+    background-size: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.create--account {
+    text-decoration: none;
+}
+
+.login__form--container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    justify-content: center;
+}
+
+.register {
+    margin: 5px;
+    height: 10px;
+    width: 50vh;
+}

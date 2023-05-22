@@ -1,0 +1,33 @@
+.signup__image--container {
+    background-image: url('https://png.pngtree.com/png-vector/20220526/ourmid/pngtree-online-registration-or-sign-up-login-for-account-on-smartphone-app-png-image_4740836.png');
+    height: cover;
+    width: cover;
+    background-size: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.signup__form--container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    justify-content: center;
+}
+
+.admin--checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    padding: 10px;
+}
+
+.register {
+    margin-top: 20px;
+    height: 40px;
+}
+
+.login--account {
+    text-decoration: none;
+}
