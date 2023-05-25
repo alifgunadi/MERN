@@ -31,17 +31,6 @@ export const appApi = createApi({
               method: 'POST',
               body: { token }
             }),
-            onQueryStarted: async (token, { dispatch }) => {
-                try {
-                  dispatch(logout());
-                  await localStorage.removeItem('persist:root');
-                } catch (error) {
-                  console.error('Logout failed:', error);
-                }
-            },
-            onError: (error) => {
-                console.error('Logout failed:', error);
-            },
         }),
 
         createProduct: builder.mutation({
@@ -62,7 +51,7 @@ export const appApi = createApi({
 
         addToCart: builder.mutation({
             query: (cartInfo) => ({
-                url: "/products/add-to-cart",
+                url: "/api/products/add-to-cart",
                 body: cartInfo,
                 method: "POST",
             }),
@@ -70,7 +59,7 @@ export const appApi = createApi({
 
         removeFromCart: builder.mutation({
             query: (body) => ({
-                url: "/products/remove-from-cart",
+                url: "/api/products/remove-from-cart",
                 body,
                 method: "POST",
             }),
@@ -78,7 +67,7 @@ export const appApi = createApi({
 
         increaseCartProduct: builder.mutation({
             query: (body) => ({
-                url: "/products/increase-cart",
+                url: "/api/products/increase-cart",
                 body,
                 method: "POST",
             }),

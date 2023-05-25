@@ -13,15 +13,15 @@ function CartPage() {
     const user = useSelector((state) => state.user);
     const products = useSelector((state) => state.products);
     const userCartObj = user.cart;
-    // let cart = products.filter((product) => userCartObj[product._id] != null);
-    const cart = useMemo(() => products.filter((product) => userCartObj[product._id] != null), [products, userCartObj]);
+    const cart = useMemo(() => products.filter((product) => userCartObj && userCartObj[product._id] != null), [products, userCartObj]);
     const [increaseCart] = useIncreaseCartProductMutation();
     const [decreaseCart] = useDecreaseCartProductMutation();
     const [removeFromCart, { isLoading }] = useRemoveFromCartMutation();
 
     function handleDecrease(product) {
-        const quantity = user.cart.count;
-        if (quantity <= 0) return alert("Can't proceed");
+        if (!!user.cart || !user.cart.count || user.cart.count <= 0) {
+            return alert("Can't be process")
+        }
         decreaseCart(product);
     }
 
@@ -54,11 +54,11 @@ function CartPage() {
                                 <tbody>
                                     {/* loop through cart products */}
                                     {cart.map((item) => (
-                                        <tr>
+                                        <tr key={item._id}>
                                             <td>&nbsp;</td>
                                             <td>
                                                 {!isLoading && <i className="fa fa-times" style={{ marginRight: 10, cursor: "pointer" }} onClick={() => removeFromCart({ productId: item._id, price: item.price, userId: user._id })}></i>}
-                                                <img src={item.pictures[0].url} style={{ width: 100, height: 100, objectFit: "cover" }} />
+                                                {item.pictures && item.pictures.length > 0 && <img src={item.pictures[0].url} style={{ width: 100, height: 100, objectFit: "cover" }} />}
                                             </td>
                                             <td>${item.price}</td>
                                             <td>
