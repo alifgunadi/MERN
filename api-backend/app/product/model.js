@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const { model, Schema } = mongoose;
 
 const productSchema = Schema({
-    
     name: {
         type: String,
         minlength: [3, `Panjang nama minimal 3 karakter`],

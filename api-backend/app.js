@@ -36,7 +36,7 @@ app.use('/api/images', imageRoutes);
 app.use('/api/category', categoriesRoutes);
 app.use('/api/tag', tagRoutes);
 app.use('/api/delivery-addresses', deliveryAddressRoutes);
-app.use('/api/carts', cartRoutes);
+app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/invoice', invoiceRoutes);
 

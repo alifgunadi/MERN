@@ -18,10 +18,11 @@ function decodeToken () {
 
             const user = await Users.findOne({token: {$in: [token]}});
             req.user = user;
+            console.log("before next")
             next(); 
             
         } catch (error) {
-            
+            console.log("error")
             next(error);
         };
     }

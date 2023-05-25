@@ -1,26 +1,31 @@
-const Users = require('../user/model.js');
+const CartItem = require('../cart-item/model');
+
+const getCartItem = async (req,res) => {
+    try {
+        const user = req.user._id;
+        const cartItems = await CartItem.find(user).populate('product');
+        return res.json(cartItems);
+    } catch (error) {
+        if (error && error.name === 'ValidationError') {
+            return res.json({
+                status: error,
+                message: error.message,
+                fields: error.errors
+            })
+        }
+    }
+};
 
 const addToCart = async (req, res) => {
-    const {userId, productId, price} = req.body;
-
     try {
-      const user = await Users.findById(userId);
-      const userCart = user.cart;
-      if(user.cart[productId]){
-        userCart[productId] += 1;
-      } else {
-        userCart[productId] = 1;
-      }
-      userCart.count += 1;
-      userCart.total = Number(userCart.total) + Number(price);
-      user.cart = userCart;
-      user.markModified('cart');
-      await user.save();
-      res.status(200).json(user);
+        const { product, qty, price, image_url, user } = req.body;
+        const cartItems = new CartItem({product, qty, price, image_url, user});
+        cartItems.save();
+        return res.json(cartItems);
     } catch (error) {
-        if (error && error.name === "Validation error") {
+        if (error && error.name === 'ValidationError') {
             return res.json({
-                error: error,
+                status: error,
                 message: error.message,
                 fields: error.errors
             })
@@ -28,23 +33,16 @@ const addToCart = async (req, res) => {
     }
 };
 
-const increaseCart = async () => {
-    const {userId, productId, price} = req.body;
-
+const updateCartItem = async (req, res) => {
     try {
-      const user = await Users.findById(userId);
-      const userCart = user.cart;
-      userCart.total += Number(price);
-      userCart.count += 1;
-      userCart[productId] += 1;
-      user.cart = userCart;
-      user.markModified('cart');
-      await user.save();
-      res.status(200).json(user);
+        const { qty } = req.body;
+        const { id } = req.params;
+        const cartItems = await CartItem.findByIdAndUpdate(id, {qty}, {new: true});
+        return res.json(cartItems)
     } catch (error) {
-        if (error && error.name === "Validation error") {
+        if (error && error.name === 'ValidationError') {
             return res.json({
-                error: error,
+                status: error,
                 message: error.message,
                 fields: error.errors
             })
@@ -52,23 +50,15 @@ const increaseCart = async () => {
     }
 };
 
-const decreaseCart = async () => {
-    const {userId, productId, price} = req.body;
-
+const deleteCartItem = async (req, res) => {
     try {
-      const user = await Users.findById(userId);
-      const userCart = user.cart;
-      userCart.total -= Number(price);
-      userCart.count -= 1;
-      userCart[productId] -= 1;
-      user.cart = userCart;
-      user.markModified('cart');
-      await user.save();
-      res.status(200).json(user);
+        const { id } = req.params;
+        const cartItems = await CartItem.findByIdAndDelete(id);
+        return res.json(cartItems);
     } catch (error) {
-        if (error && error.name === "Validation error") {
+        if (error && error.name === 'ValidationError') {
             return res.json({
-                error: error,
+                status: error,
                 message: error.message,
                 fields: error.errors
             })
@@ -76,30 +66,118 @@ const decreaseCart = async () => {
     }
 };
 
+module.exports = {
+    getCartItem,
+    addToCart,
+    updateCartItem,
+    deleteCartItem
+}
 
-const removeCart = async () => {
-    const {userId, productId, price} = req.body;
 
-    try {
-      const user = await Users.findById(userId);
-      const userCart = user.cart;
-      userCart.total -= Number(userCart[productId]) * Number(price);
-      userCart.count -= userCart[productId];
-      delete userCart[productId];
-      user.cart = userCart;
-      user.markModified('cart');
-      await user.save();
-      res.status(200).json(user);
-    } catch (error) {
-        if (error && error.name === "Validation error") {
-            return res.json({
-                error: error,
-                message: error.message,
-                fields: error.errors
-            })
-        }
-    }
-};
+
+
+// const Users = require('../user/model.js');
+
+// const addToCart = async (req, res) => {
+//     const {userId, productId, price} = req.body;
+
+//     try {
+//       const user = await Users.findById(userId);
+//       const userCart = user.cart;
+//       if(user.cart[productId]){
+//         userCart[productId] += 1;
+//       } else {
+//         userCart[productId] = 1;
+//       }
+//       userCart.count += 1;
+//       userCart.total = Number(userCart.total) + Number(price);
+//       user.cart = userCart;
+//       user.markModified('cart');
+//       await user.save();
+//       res.status(200).json(user);
+//     } catch (error) {
+//         if (error && error.name === "Validation error") {
+//             return res.json({
+//                 error: error,
+//                 message: error.message,
+//                 fields: error.errors
+//             })
+//         }
+//     }
+// };
+
+// const increaseCart = async () => {
+//     const {userId, productId, price} = req.body;
+
+//     try {
+//       const user = await Users.findById(userId);
+//       const userCart = user.cart;
+//       userCart.total += Number(price);
+//       userCart.count += 1;
+//       userCart[productId] += 1;
+//       user.cart = userCart;
+//       user.markModified('cart');
+//       await user.save();
+//       res.status(200).json(user);
+//     } catch (error) {
+//         if (error && error.name === "Validation error") {
+//             return res.json({
+//                 error: error,
+//                 message: error.message,
+//                 fields: error.errors
+//             })
+//         }
+//     }
+// };
+
+// const decreaseCart = async () => {
+//     const {userId, productId, price} = req.body;
+
+//     try {
+//       const user = await Users.findById(userId);
+//       const userCart = user.cart;
+//       userCart.total -= Number(price);
+//       userCart.count -= 1;
+//       userCart[productId] -= 1;
+//       user.cart = userCart;
+//       user.markModified('cart');
+//       await user.save();
+//       res.status(200).json(user);
+//     } catch (error) {
+//         if (error && error.name === "Validation error") {
+//             return res.json({
+//                 error: error,
+//                 message: error.message,
+//                 fields: error.errors
+//             })
+//         }
+//     }
+// };
+
+
+// const removeCart = async () => {
+//     const {userId, productId, price} = req.body;
+
+//     try {
+//       const user = await Users.findById(userId);
+//       const userCart = user.cart;
+//       userCart.total -= Number(userCart[productId]) * Number(price);
+//       userCart.count -= userCart[productId];
+//       delete userCart[productId];
+//       user.cart = userCart;
+//       user.markModified('cart');
+//       await user.save();
+//       res.status(200).json(user);
+//     } catch (error) {
+//         if (error && error.name === "Validation error") {
+//             return res.json({
+//                 error: error,
+//                 message: error.message,
+//                 fields: error.errors
+//             })
+//         }
+//     }
+// };
 
 // const update = async (req, res, next) => {
 //     try {
@@ -164,11 +242,11 @@ const removeCart = async () => {
 //     }
 // };
 
-module.exports = {
-    addToCart,
-    increaseCart,
-    decreaseCart,
-    removeCart,
+// module.exports = {
+//     addToCart,
+//     increaseCart,
+//     decreaseCart,
+//     removeCart,
     // update,
     // index
-}
+// }

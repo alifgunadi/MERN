@@ -4,7 +4,8 @@ const config = require("../config.js");
 const Product = require("./model.js");
 const Category = require('../category/model.js');
 const Tag = require('../tag/model.js');
-const cloudinary = require("cloudinary").v2;
+const Users = require('../user/model.js');
+// const cloudinary = require("cloudinary").v2;
 
 
 const index = async (req, res, next) => {
@@ -270,10 +271,114 @@ const update = async (req, res, next) => {
     }
 };
 
+const addToCart = async (req, res) => {
+    const {userId, productId, price} = req.body;
+
+    try {
+      const user = await Users.findById(userId);
+      const userCart = user.cart;
+      if(user.cart[productId]){
+        userCart[productId] += 1;
+      } else {
+        userCart[productId] = 1;
+      }
+      userCart.count += 1;
+      userCart.total = Number(userCart.total) + Number(price);
+      const updated = await Users.findOneAndUpdate({ _id: userId }, {
+        cart: userCart
+      }, { new: true });
+      user.markModified('cart');
+      res.status(200).json(updated);
+    } catch (error) {   
+        console.log(error);
+        if (error && error.name === "ValidationError") {
+            return res.json({
+                error: error,
+                message: error.message,
+                fields: error.errors
+            })
+        }
+    }
+};
+
+const increaseCart = async (req, res) => {
+    const {userId, productId, price} = req.body;
+
+    try {
+      const user = await Users.findById(userId);
+      const userCart = user.cart;
+      userCart.total += Number(price);
+      userCart.count += 1;
+      userCart[productId] += 1;
+      user.cart = userCart;
+      const update = await Users.findOneAndUpdate({ _id: userId }, { cart: userCart }, { new: true });
+      res.status(200).json(update);
+    } catch (error) {
+        if (error && error.name === "Validation error") {
+            return res.json({
+                error: error,
+                message: error.message,
+                fields: error.errors
+            })
+        }
+    }
+};
+
+const decreaseCart = async () => {
+    const {userId, productId, price} = req.body;
+
+    try {
+      const user = await Users.findById(userId);
+      const userCart = user.cart;
+      userCart.total -= Number(price);
+      userCart.count -= 1;
+      userCart[productId] -= 1;
+      user.cart = userCart;
+      user.markModified('cart');
+      await user.save();
+      res.status(200).json(user);
+    } catch (error) {
+        if (error && error.name === "Validation error") {
+            return res.json({
+                error: error,
+                message: error.message,
+                fields: error.errors
+            })
+        }
+    }
+};
+
+
+const removeCart = async (req, res) => {
+    const {userId, productId, price} = req.body;
+
+    try {
+      const user = await Users.findById(userId);
+      const userCart = user.cart;
+      userCart.total -= Number(userCart[productId]) * Number(price);
+      userCart.count -= userCart[productId];
+      delete userCart[productId];
+      const update = await Users.findOneAndUpdate({ _id: userId }, { cart: userCart }, { new: true });
+      res.status(200).json(update);
+    } catch (error) {
+        if (error && error.name === "Validation error") {
+            return res.json({
+                error: error,
+                message: error.message,
+                fields: error.errors
+            })
+        }
+    }
+};
+
 module.exports = {
     index,
     getId,
     deleteItem,
     store,
-    update
+    update,
+    addToCart,
+    increaseCart,
+    decreaseCart,
+    removeCart,
 };
