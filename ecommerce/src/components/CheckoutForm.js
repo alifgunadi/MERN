@@ -20,7 +20,7 @@ function CheckoutForm() {
         e.preventDefault();
         if (!stripe || !elements || user.cart.count <= 0) return;
         setPaying(true);
-        const { client_secret } = await fetch("http://localhost:8080/create-payment", {
+        const { client_secret } = await fetch("http://localhost:3000/create-payment", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -40,7 +40,7 @@ function CheckoutForm() {
                 if (!isLoading && !isError) {
                     setAlertMessage(`Payment ${paymentIntent.status}`);
                     setTimeout(() => {
-                        // navigate("/orders");
+                        navigate("/orders");
                     }, 3000);
                 }
             });
@@ -57,33 +57,27 @@ function CheckoutForm() {
                             <Form.Label>First Name</Form.Label>
                             <Form.Control type="text" placeholder="First Name" value={user.name} disabled />
                         </Form.Group>
-                    </Col>
-                    <Col md={6}>
                         <Form.Group className="mb-3">
                             <Form.Label>Email</Form.Label>
                             <Form.Control type="text" placeholder="Email" value={user.email} disabled />
                         </Form.Group>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col md={7}>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Address</Form.Label>
-                            <Form.Control type="text" placeholder="Address" value={address} onChange={(e) => setAddress(e.target.value)} required />
-                        </Form.Group>
-                    </Col>
-                    <Col md={5}>
                         <Form.Group className="mb-3">
                             <Form.Label>Country</Form.Label>
                             <Form.Control type="text" placeholder="Country" value={country} onChange={(e) => setCountry(e.target.value)} required />
                         </Form.Group>
                     </Col>
+                    <Col lg={12}>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Address</Form.Label>
+                            <Form.Control type="text" placeholder="Address" value={address} onChange={(e) => setAddress(e.target.value)} required />
+                        </Form.Group>
+                    </Col>
                 </Row>
                 <label htmlFor="card-element">Card</label>
                 <CardElement id="card-element" />
-                <Button className="mt-3" type="submit" disabled={user.cart.count <= 0 || paying || isSuccess}>
-                    {paying ? "Processing..." : "Pay"}
-                </Button>
+                    <Button className="mt-3" type="submit" disabled={user.cart.count <= 0 || paying || isSuccess}>
+                        {paying ? "Processing..." : "Payment"}
+                    </Button>
             </Form>
         </Col>
     );

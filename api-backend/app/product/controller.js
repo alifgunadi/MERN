@@ -94,7 +94,7 @@ const deleteItem = async (req, res, next) => {
         };
         return res.json(product);
     } catch (error) {
-        if (error && error.name === `Validation error`) {
+        if (error && error.name === `ValidationError`) {
             res.json({
                 error: 1,
                 message: error.message,
@@ -146,7 +146,7 @@ const store = async (req, res, next) => {
                     return;
                 } catch (error) {
                     fs.unlinkSync(target_path);
-                    if (error && error.name === "Validation error") {
+                    if (error && error.name === "ValidationError") {
                         return res.json({
                             error: 1,
                             message: error.message,
@@ -173,7 +173,7 @@ const store = async (req, res, next) => {
 
         
     } catch (error) {
-        if (error && error.name === `Validation error`) {
+        if (error && error.name === `ValidationError`) {
             return res.json({
                 error: 1,
                 message: error.message,
@@ -234,7 +234,7 @@ const update = async (req, res, next) => {
                     return res.json(product);
                 } catch (error) {
                     fs.unlinkSync(target_path);
-                    if (error && error.name === "Validation error") {
+                    if (error && error.name === "ValidationError") {
                         return res.json({
                             error: 1,
                             message: error.message,
@@ -260,7 +260,7 @@ const update = async (req, res, next) => {
         }
         
     } catch (error) {
-        if (error && error.name === `Validation error`) {
+        if (error && error.name === `ValidationError`) {
             return res.json({
                 error: 1,
                 message: error.message,
@@ -314,7 +314,7 @@ const increaseCart = async (req, res) => {
       const update = await Users.findOneAndUpdate({ _id: userId }, { cart: userCart }, { new: true });
       res.status(200).json(update);
     } catch (error) {
-        if (error && error.name === "Validation error") {
+        if (error && error.name === "ValidationError") {
             return res.json({
                 error: error,
                 message: error.message,
@@ -324,21 +324,29 @@ const increaseCart = async (req, res) => {
     }
 };
 
-const decreaseCart = async () => {
+const decreaseCart = async (req, res) => {
     const {userId, productId, price} = req.body;
 
     try {
       const user = await Users.findById(userId);
       const userCart = user.cart;
       userCart.total -= Number(price);
+      if (userCart.total < 0) {
+        return userCart.total = 0;
+      }
       userCart.count -= 1;
+      if (userCart.count < 0) {
+        return userCart.count = 0;
+      }
       userCart[productId] -= 1;
+      if (userCart[productId] < 0) {
+        return userCart[productId] = 0;
+      }
       user.cart = userCart;
-      user.markModified('cart');
-      await user.save();
-      res.status(200).json(user);
+      const update = await Users.findOneAndUpdate({ _id: userId }, { cart: userCart }, { new: true });
+      res.status(200).json(update);
     } catch (error) {
-        if (error && error.name === "Validation error") {
+        if (error && error.name === "ValidationError") {
             return res.json({
                 error: error,
                 message: error.message,
@@ -347,7 +355,6 @@ const decreaseCart = async () => {
         }
     }
 };
-
 
 const removeCart = async (req, res) => {
     const {userId, productId, price} = req.body;
@@ -361,7 +368,7 @@ const removeCart = async (req, res) => {
       const update = await Users.findOneAndUpdate({ _id: userId }, { cart: userCart }, { new: true });
       res.status(200).json(update);
     } catch (error) {
-        if (error && error.name === "Validation error") {
+        if (error && error.name === "ValidationError") {
             return res.json({
                 error: error,
                 message: error.message,

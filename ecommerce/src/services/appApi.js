@@ -1,6 +1,6 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
-import { logout } from '../features/userSlice';
-import localStorage from 'redux-persist/es/storage';
+// import { logout } from '../features/userSlice';
+// import localStorage from 'redux-persist/es/storage';
 
 export const appApi = createApi({
     reducerPath: "appApi",
@@ -52,34 +52,42 @@ export const appApi = createApi({
         addToCart: builder.mutation({
             query: (cartInfo) => ({
                 url: "/api/products/add-to-cart",
-                body: cartInfo,
                 method: "POST",
+                body: cartInfo,
             }),
         }),
 
         removeFromCart: builder.mutation({
             query: (body) => ({
                 url: "/api/products/remove-from-cart",
-                body,
                 method: "POST",
+                body,
             }),
         }),
 
         increaseCartProduct: builder.mutation({
             query: (body) => ({
                 url: "/api/products/increase-cart",
-                body,
                 method: "POST",
+                body,
             }),
         }),
 
         decreaseCartProduct: builder.mutation({
             query: (body) => ({
-                url: "/products/decrease-cart",
-                body,
+                url: "/api/products/decrease-cart",
                 method: "POST",
+                body,
             }),
         }),
+
+        createOrder: builder.mutation({
+            query: (body) => ({
+                url: "/api/orders",
+                method: "POST",
+                body,
+            }),
+        })
     }),
 });
 
@@ -93,6 +101,7 @@ export const {
     useRemoveFromCartMutation,
     useIncreaseCartProductMutation,
     useDecreaseCartProductMutation,
+    useCreateOrderMutation,
 } = appApi;
 
 export default appApi;
