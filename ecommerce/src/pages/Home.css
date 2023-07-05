@@ -1,8 +1,19 @@
+.all-home {
+    font-family: Rubik;
+}
+
 .home-banner {
     padding-top: 5px;
     transform: scale(1);
     width: 100%;
+    border-radius: 10px;
+    /* box-shadow: 0 15px 25px rgba(0, 0, 0, 0.5); */
 }
+
+/* .home-banner:hover {
+    transition: transform 0.5s ease;
+    transform: scale(1.01);
+} */
 
 .category-tile {
     height: 150px;
@@ -12,6 +23,7 @@
     padding-left: 20px !important;
     padding-right: 20px !important;
     display: flex;
+    flex-wrap: nowrap;
     justify-content: center;
     align-items: center;
     align-content: center;
@@ -22,12 +34,26 @@
     margin-top: 30px;
 }
 
+.category-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
 .card {
     border: none !important;
-    width: 15rem !important;
+    width: 17rem !important;
+    height: auto !important;
 }
+
+.card:hover {
+    transition: transform 0.5s ease;
+    transform: scale(1.05);
+}
+
 img.card-img-top.product-preview-img {
     border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.8);
 }
 
 .category-tile:hover {
@@ -38,5 +64,59 @@ img.card-img-top.product-preview-img {
     width: 100%;
     display: block;
     margin: 0 auto;
-    border-radius: 0;
+    border-radius: 10px;
+    /* box-shadow: 0 35px 25px rgba(0, 0, 0, 0.5); */
+}
+
+/* .sale__banner--container img:hover {
+    transition: transform 0.5s ease;
+    transform: scale(1.01);
+} */
+
+.btn-see-more {
+    border: 0px;
+    border-radius: 20px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.good-mood {
+    color: rgb(255, 179, 0);
+}
+
+.btn-see-more:hover {
+    transition: transform 0.3s ease;
+    transform: scale(1.04);
+    background-color: aliceblue;
+}
+
+.image-text {
+    text-align: center;
+    color: aliceblue;
+}
+
+
+.text {
+    background-image: url("../images/resto.jpg"); 
+    background-size: cover;
+    background-position: center;
+    color: aliceblue;
+    text-align: center;
+    font-size: 55px;
+    padding-top: 200px;
+    padding-bottom: 200px;
+    border-radius: 10px;
+    /* box-shadow: 0 10px 20px rgba(0, 0, 0, 0.8); */
+    animation: profile__animate 40s ease-in-out infinite 10s;
+}
+
+@keyframes profile__animate {
+    0% {
+        background-position: 0% 0%;
+    }
+    50% {
+        background-position: 100% 100%;
+    }
+    100% {
+        background-position: 0% 0%;
+    }
 }

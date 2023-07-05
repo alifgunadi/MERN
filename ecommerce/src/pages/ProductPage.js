@@ -1,19 +1,20 @@
 import axios from '../axios';
 import React, { useEffect, useState } from 'react'
-import { Badge, Button, ButtonGroup, Col, Container, Form, Row } from 'react-bootstrap';
+import { Alert, Badge, Button, ButtonGroup, Col, Container, Row } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom'
 import Loading from '../components/Loading';
 import './ProductPage.css';
 import { LinkContainer } from 'react-router-bootstrap';
-import { useAddToCartMutation } from '../services/appApi';
+import { useAddToCartMutation, useDeleteProductMutation } from '../services/appApi';
+import ToastMessage from '../components/ToastMessage';
 
 function ProductPage() {
     const { id } = useParams();
     const user = useSelector((state) => state.user);
     const [product, setProduct] = useState(null);
-    const [quantity, setQuantity] = useState(1);
-    const [addToCart, { isSuccess }] = useAddToCartMutation(); // <-- Added parentheses after useAddToCartMutation
+    const [addToCart, { isSuccess: addToCartSuccess }] = useAddToCartMutation();
+    const [deleteProduct, { isSuccess: deleteProductSuccess, isError: deleteProductError }] = useDeleteProductMutation();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -35,34 +36,43 @@ function ProductPage() {
     return (
         <div>
             <Container className='pt-5 mt-5' style={{ position: 'relative' }}>
-                <Row>
+                {deleteProductSuccess && <Alert variant='success'>Delete Success</Alert>}
+                {deleteProductError && <Alert variant='danger'>Delete Product Error</Alert>}
+                <Row style={{fontFamily: "Rubik"}}>
                     <Col style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', borderRadius: '5px' }} className='product--image'>
                         <img src={product.image_url} alt='ImageProduct' className='product' />
                     </Col>
                     <Col className='pt-4'>
                         <h1>{product.name}</h1>
                         <p>
-                            <Badge bg='primary'>{product.category.name}</Badge>
+                            <Badge bg='warning' style={{color: "black"}}>{product.category.name}</Badge>
                         </p>
                         <p className='product__price'>
-                            Rp.{product.price}
+                            Rp.&nbsp;{product.price}
                         </p>
                         <p style={{ textAlign: 'center' }} className='pt-1'>
                             <strong>Description:</strong> <br />{product.description}
                         </p>
                         {user && !user.admin && (
                             <ButtonGroup style={{ width: '90%' }}>
-                                <Form.Control className='text-center' style={{ width: '75%', borderRadius: '0' }} type='number' value={quantity} onChange={(e) => setQuantity(parseInt(e.target.value))} min={1} />
                                 <Button size='lg' onClick={() => addToCart({ userId: user._id, productId: product._id, price: product.price, image: product.image_url[0].url })}>
                                     Add to cart
                                 </Button>
                             </ButtonGroup>
                         )}
                         {user && user.admin && (
-                            <LinkContainer to={`/products/${product._id}/edit`}>
-                                <Button size='lg'>Edit</Button>
-                            </LinkContainer>
+                            <Row>
+                                <Col>
+                                    <LinkContainer to={`/products/${product._id}/edit`}>
+                                        <Button size='lg' >Edit Product</Button>
+                                    </LinkContainer>
+                                </Col>
+                                <Col>
+                                    <Button size='lg' variant='danger' onClick={() => deleteProduct(product._id)}>Delete Product</Button>
+                                </Col>
+                            </Row>
                         )}
+                        {addToCartSuccess && <ToastMessage bg="info" title="Added to cart" body={`${product.name} is in your cart`} />}
                     </Col>
                 </Row>
             </Container>

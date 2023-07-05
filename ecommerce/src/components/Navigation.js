@@ -17,10 +17,10 @@ function Navigation() {
   console.log(user);
 
   return (
-        <Navbar fixed="top" bg="light" variant="light" expand="lg">
+        <Navbar fixed="top" bg="transparent" variant="light" expand="lg" className="navigator">
           <Container>
             <LinkContainer to="/">
-                <Navbar.Brand>lifShops</Navbar.Brand>
+                <Navbar.Brand className="resto">Restö</Navbar.Brand>
             </LinkContainer>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
@@ -42,20 +42,20 @@ function Navigation() {
                 </Nav.Link>
               </LinkContainer>
             )}
-                {user && (
-                <>
-                  <NavDropdown title={`${user.name}`} id="basic-nav-dropdown">
+            {user && (
+              <>
+                <NavDropdown title={`${user.name}`} id="basic-nav-dropdown">
 
-                    {user.admin && (
-                      <>
-                        <LinkContainer to="/dashboard" className="dropdown">
-                          <Nav.Link>Dashboard</Nav.Link>
-                        </LinkContainer>
-                        <LinkContainer to="/new-product" className="dropdown-form">
-                          <Nav.Link>Create Product</Nav.Link>
-                        </LinkContainer>
-                      </>
-                    )}
+                  {user.admin && (
+                    <>
+                      <LinkContainer to="/dashboard" className="dropdown">
+                        <Nav.Link>Dashboard</Nav.Link>
+                      </LinkContainer>
+                      <LinkContainer to="/new-product" className="dropdown-form">
+                        <Nav.Link>Create Product</Nav.Link>
+                      </LinkContainer>
+                    </>
+                  )}
 
                     {!user.admin && (
                       <>

@@ -52,7 +52,7 @@ function CheckoutForm() {
             <Form onSubmit={handlePay}>
                 <Row>
                     {alertMessage && <Alert>{alertMessage}</Alert>}
-                    <Col md={6}>
+                    <Col md={12}>
                         <Form.Group className="mb-3">
                             <Form.Label>First Name</Form.Label>
                             <Form.Control type="text" placeholder="First Name" value={user.name} disabled />
@@ -65,19 +65,17 @@ function CheckoutForm() {
                             <Form.Label>Country</Form.Label>
                             <Form.Control type="text" placeholder="Country" value={country} onChange={(e) => setCountry(e.target.value)} required />
                         </Form.Group>
-                    </Col>
-                    <Col lg={12}>
                         <Form.Group className="mb-3">
                             <Form.Label>Address</Form.Label>
                             <Form.Control type="text" placeholder="Address" value={address} onChange={(e) => setAddress(e.target.value)} required />
                         </Form.Group>
-                    </Col>
-                </Row>
                 <label htmlFor="card-element">Card</label>
                 <CardElement id="card-element" />
-                    <Button className="mt-3" type="submit" disabled={user.cart.count <= 0 || paying || isSuccess}>
-                        {paying ? "Processing..." : "Payment"}
+                    <Button style={{borderRadius: "40px", width: "150px", fontWeight: "bold", color: "aliceblue"}} variant="info" className="mt-3" type="submit" disabled={user.cart.count <= 0 || paying || isSuccess}>
+                        {paying ? "Processing..." : "Pay"}
                     </Button>
+                    </Col>
+                </Row>
             </Form>
         </Col>
     );

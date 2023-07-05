@@ -92,20 +92,13 @@ function NewProducts() {
                 />
               </Form.Group>
 
-              <Form.Group mb='3'>
+              <Form.Group className="mb-3">
                 <Form.Label>Product description</Form.Label>
-                <Form.Control key='description'
-                  type='textarea'
-                  style={{ height: '100px' }}
-                  placeholder='Enter description'
-                  value={description}
-                  required
-                  onChange={(e) => setDescription(e.target.value)}
-                />
-              </Form.Group>
+                <Form.Control as="textarea" placeholder="Product description" style={{ height: "100px" }} value={description} required onChange={(e) => setDescription(e.target.value)} />
+            </Form.Group>
 
               <Form.Group className="mb-3">
-                <Button type="button" onClick={showWidget}>
+                <Button className='upload--images' type="button" onClick={showWidget}>
                     Upload Images
                 </Button>
                 <div className="images-preview-container">
@@ -118,52 +111,52 @@ function NewProducts() {
                 </div>
             </Form.Group>
 
-              <Form.Group>
-                <Form.Label>Price {'Rp.'}</Form.Label>
-                <Form.Control key='price'
-                  type='number'
-                  placeholder='Enter price'
-                  value={price}
-                  required
-                  onChange={(e) => setPrice(e.target.value)}
-                />
-              </Form.Group>
+            <Form.Group>
+              <Form.Label>Price {'Rp.'}</Form.Label>
+              <Form.Control key='price'
+                type='number'
+                placeholder='Enter price'
+                value={price}
+                required
+                onChange={(e) => setPrice(e.target.value)}
+              />
+            </Form.Group>
 
-              <Form.Group key='category' mb='3' onChange={(e) => setCategory(e.target.value)}>
-                <Form.Label>Product category</Form.Label>
-                <Form.Select>
-                  <option disabled selected>
-                    --Select one--
-                  </option>
-                  <option value='Food'>Food</option>
-                  <option value='Drink'>Drink</option>
-                  <option value='Snack'>Snack</option>
-                  <option value='Dessert'>Dessert</option>
-                </Form.Select>
-              </Form.Group>
+            <Form.Group key='category' mb='3' onChange={(e) => setCategory(e.target.value)}>
+              <Form.Label>Product category</Form.Label>
+              <Form.Select>
+                <option disabled selected>
+                  --Select one--
+                </option>
+                <option value='Food'>Food</option>
+                <option value='Drink'>Drink</option>
+                <option value='Snack'>Snack</option>
+                <option value='Dessert'>Dessert</option>
+              </Form.Select>
+            </Form.Group>
 
-              <Form.Group key='tags' mb='3' onChange={(e) => setTags(e.target.value)}>
-                <Form.Label>Product tags</Form.Label>
-                <Form.Select>
-                  <option disabled selected>
-                    --Select one--
-                  </option>
-                  <option value='spicy'>Spicy</option>
-                  <option value='ice'>Ice</option>
-                  <option value='hot'>Hot</option>
-                  <option value='fruits'>Fruits</option>
-                </Form.Select>
-              </Form.Group>
+            <Form.Group key='tags' mb='3' onChange={(e) => setTags(e.target.value)}>
+              <Form.Label>Product tags</Form.Label>
+              <Form.Select>
+                <option disabled selected>
+                  --Select one--
+                </option>
+                <option value='spicy'>Spicy</option>
+                <option value='ice'>Ice</option>
+                <option value='hot'>Hot</option>
+                <option value='fruits'>Fruits</option>
+              </Form.Select>
+            </Form.Group>
 
-              <Form.Group key='submit' mb='3'>
-                <Button
-                  type='submit'
-                  className='register'
-                  disabled={isLoading || isSuccess}
-                >
-                  Create product
-                </Button>
-              </Form.Group>
+            <Form.Group key='submit' mb='3'>
+              <Button
+                type='submit'
+                className='register'
+                disabled={isLoading || isSuccess}
+              >
+                Create product
+              </Button>
+            </Form.Group>
             </Form>
           </Col>
           <Col md={6} className='new-product_image--container'></Col>

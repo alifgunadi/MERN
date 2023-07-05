@@ -1,6 +1,7 @@
 import React from 'react';
 import { Badge, Card } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
+import './ProductPriview.css';
 
 function ProductPreview({_id, name, category, tags, image_url}) {
 

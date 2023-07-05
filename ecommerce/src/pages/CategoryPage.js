@@ -48,14 +48,14 @@ function CategoryPage() {
     // const additionCb = useCallback(addition, [num1, num2])
     // additionCb(num1, num2);
     return (
-    <div className='category-page-container'>
-        <div className={`pt-5 ${category}-banner-container category-banner-container`}>
+    <div className='category-page-container' style={{fontFamily: "Rubik"}}>
+        <div className={`${category}-banner-container category-banner-container`}>
             <h1 className='text-center'>{category.charAt(0).toUpperCase() + category.slice(1)}</h1>
         </div>
         <div className='filters-container d-flex justify-content-center pt-4 pb-4 '>
-            <input type='search' placeholder='Search' onChange={(e) => setSearchTerm(e.target.value)}/>
+            <input className='search' type='search' placeholder='Search' onChange={(e) => setSearchTerm(e.target.value)}/>
         </div>
-        {productsSearch.length === 0 ? ( <h1>No products</h1> ) : 
+        {productsSearch.length === 0 ? ( <h1>No Products</h1> ) : 
             ( <Container>
                 <Row>
                     <Col md={{span: 10, offset: 1}}>

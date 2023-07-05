@@ -1,8 +1,17 @@
+.navigator {
+    font-family: Rubik;
+}
+
+.resto {
+    font-weight: bold;
+}
+
 .logout-btn {
     margin: 0 auto;
     display: block !important;
     background-color: rgb(255, 140, 0);
     border: 0px;
+    border-radius: 50px;
 }
 
 .logo {
@@ -71,11 +80,12 @@
 }
 
 .dropdown {
-    margin-left: 50px;
-    margin-left: 50px;
+    text-align: center;
+    padding-left: 10px;
 }
 
 .dropdown-form {
-    margin-left: 10px;
-    margin-left: 10px;
+    text-align: center;
+    padding-left: 10px;
+
 }

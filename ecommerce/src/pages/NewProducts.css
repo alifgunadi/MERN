@@ -45,7 +45,7 @@
     height: 100vh;
 }
 
-.upload-btn {
-    margin-top: 5px;
-    margin-bottom: 1px;
+.upload--images {
+    margin-top: 10px;
+    margin-bottom: -40px;
 }
