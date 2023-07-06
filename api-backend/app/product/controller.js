@@ -5,7 +5,6 @@ const Product = require("./model.js");
 const Category = require('../category/model.js');
 const Tag = require('../tag/model.js');
 const Users = require('../user/model.js');
-// const cloudinary = require("cloudinary").v2;
 
 
 const index = async (req, res, next) => {
@@ -45,7 +44,7 @@ const index = async (req, res, next) => {
         console.log("HERE");
         
         let product = await Product.find(criteria).skip(parseInt(skip)).limit(parseInt(limit)).populate("category tags");
-        let count = await Product.find().countDocuments();
+        // let count = await Product.find().countDocuments();
         return res.json(product);
     } catch (error) {
         console.log("ERROR", error);
@@ -67,7 +66,7 @@ const getId = async (req, res, next) => {
         const product = await Product.findById(id, payload).populate("category tags");
       return res.json(product);
     } catch (error) {
-        if (error && error.name === "ValidationError") {
+        if (error && error.name === "Validation Error") {
             return res.status(400).json({
             error: 1,
             message: error.message,
@@ -82,19 +81,37 @@ const getId = async (req, res, next) => {
 const deleteItem = async (req, res, next) => {
     try {
         // let payload = req.body;
-        // let { id } = req.params;
-        // let product = await Product.findByIdAndDelete(id, payload);
-        // return res.json(product)
+        // let { id } = req.params.id;
+        // let product = await Product.findByIdAndDelete(
+        //   id, { ...payload }
+        // );
+        // console.log("Deleted", product);
+        // return res.json(product);
 
-        let product = await Product.findByIdAndDelete(req.params.id);
+        let { id } = req.params;
+        let payload = req.body;
+        let product = await Product.findByIdAndDelete(id, {...payload});
         let currentImage = `${config.rootPath}/images/products/${product.image_url}`;
 
         if (fs.existsSync(currentImage)) {
             fs.unlinkSync(currentImage);
         };
+        console.log("Deleted", product);
         return res.json(product);
+
+        // let { id } = req.params;
+        // let user_id = req.body;
+
+        // const user = await Users.findById(user_id);
+        // if (!user.admin) {
+        //     return res.send({
+        //         message: "You're not admin"
+        //     })
+        // };
+        // const product = await Product.findByIdAndDelete(id);
+        // return res.json(product);
     } catch (error) {
-        if (error && error.name === `ValidationError`) {
+        if (error && error.name === `Validation Error`) {
             res.json({
                 error: 1,
                 message: error.message,
@@ -146,7 +163,7 @@ const store = async (req, res, next) => {
                     return;
                 } catch (error) {
                     fs.unlinkSync(target_path);
-                    if (error && error.name === "ValidationError") {
+                    if (error && error.name === "Validation Error") {
                         return res.json({
                             error: 1,
                             message: error.message,
@@ -165,7 +182,6 @@ const store = async (req, res, next) => {
 
             let product = new Product({ ...payload, 
                 image_url: payload.images.map(image => image.url)
-            
             });
             await product.save();
             return res.json(product);
@@ -173,7 +189,7 @@ const store = async (req, res, next) => {
 
         
     } catch (error) {
-        if (error && error.name === `ValidationError`) {
+        if (error && error.name === `Validation Error`) {
             return res.json({
                 error: 1,
                 message: error.message,
@@ -186,90 +202,94 @@ const store = async (req, res, next) => {
 
 const update = async (req, res, next) => {
     try {
-        let payload = req.body;
-        let { id } = req.params;
-
-        if (payload.category) {
-          let category = await Category.findOne({name: {$regex: payload.category, $options: 'i'}});
-          if (category) {
-            payload = {...payload, category: category._id};
-          } else {
-            delete payload.category;
-          }
-        };
+      let payload = req.body;
+      let { id } = req.params;
   
-        if (payload.tags && payload.tags.length > 0) {
-          let tags = await Tag.find({name: {$in: payload.tags}});
-          if (tags.length) {
-            payload = {...payload, tags: tags.map(tag => tag._id)};
-          } else {
-            delete payload.tags;
-          }
-        };
-
-        if (req.file) {
-            let tmp_path = req.file.path;
-            let originalExt = req.file.originalname.split(".")[req.file.originalname.split(".").length - 1];
-            let filename = req.file.filename + "." + originalExt;
-            let target_path = path.resolve(config.rootPath, `public/images/products/${filename}`);
-
-            const src = fs.createReadStream(tmp_path);
-            const dest = fs.createWriteStream(target_path);
-            src.pipe(dest);
-
-            src.on("end", async () => {
-                try {
-                    let product = await Product.findById(id);
-                    let currentImage = `${config.rootPath}/public/images/products/${product.image_url}`;
-                    
-                    // console.log(currentImage);
-                    if(fs.existsSync(currentImage)) {
-                        fs.unlinkSync(currentImage)
-                    };
-                    
-                    await Product.findByIdAndUpdate(id, payload, {
-                        new: true,
-                        runValidators: true
-                    });
-                    return res.json(product);
-                } catch (error) {
-                    fs.unlinkSync(target_path);
-                    if (error && error.name === "ValidationError") {
-                        return res.json({
-                            error: 1,
-                            message: error.message,
-                            fields: error.errors,
-                        });
-                    }
-                    next(error);
-                }
-            });
-
-            src.on("error", async () => {
-                next(error);
-            });
-            
+      if (payload.category) {
+        let category = await Category.findOne({
+          name: { $regex: payload.category, $options: "i" },
+        });
+        if (category) {
+          payload = { ...payload, category: category._id };
         } else {
-
-            let product = await Product.findByIdAndUpdate(id, payload, {
-                new: true,
-                runValidators: true
-            });
-            return res.json(product);
-            
+          delete payload.category;
         }
-        
-    } catch (error) {
-        if (error && error.name === `ValidationError`) {
-            return res.json({
+      }
+  
+      if (payload.tags && payload.tags.length > 0) {
+        let tags = await Tag.find({ name: { $in: payload.tags } });
+        if (tags.length) {
+          payload = { ...payload, tags: tags.map((tag) => tag._id) };
+        } else {
+          delete payload.tags;
+        }
+      }
+  
+      if (req.file) {
+        let tmp_path = req.file.path;
+        let originalExt = req.file.originalname.split(".")[
+          req.file.originalname.split(".").length - 1
+        ];
+        let filename = req.file.filename + "." + originalExt;
+        let target_path = path.resolve(
+          config.rootPath,
+          `public/images/products/${filename}`
+        );
+  
+        const src = fs.createReadStream(tmp_path);
+        const dest = fs.createWriteStream(target_path);
+        src.pipe(dest);
+  
+        src.on("end", async () => {
+          try {
+            let product = await Product.findById(id);
+            let currentImage = `${config.rootPath}/public/images/products/${product.image_url}`;
+  
+            // console.log(currentImage);
+            if (fs.existsSync(currentImage)) {
+              fs.unlinkSync(currentImage);
+            }
+  
+            await Product.findByIdAndUpdate(id, payload, {
+              new: true,
+              runValidators: true,
+            });
+            product = await Product.findById(id);
+            return res.json(product);
+          } catch (error) {
+            fs.unlinkSync(target_path);
+            if (error && error.name === "Validation Error") {
+              return res.json({
                 error: 1,
                 message: error.message,
-                fields: error.errors
-            })
-        };
-        next(error);
+                fields: error.errors,
+              });
+            }
+            next(error);
+          }
+        });
+  
+        src.on("error", async (error) => {
+          next(error);
+        });
+      } else {
+        let product = await Product.findByIdAndUpdate(
+          id, { ...payload, new: true, image_url: payload.images.map(image => image.url) }
+        );
+        console.log("Update Done", product);
+        return res.json(product);
+      }
+    } catch (error) {
+      if (error && error.name === "Validation Error") {
+        return res.json({
+          error: 1,
+          message: error.message,
+          fields: error.errors,
+        });
+      }
+      next(error);
     }
-};
+  };
 
 const addToCart = async (req, res) => {
     const {userId, productId, price} = req.body;
@@ -291,7 +311,7 @@ const addToCart = async (req, res) => {
       res.status(200).json(updated);
     } catch (error) {   
         console.log(error);
-        if (error && error.name === "ValidationError") {
+        if (error && error.name === "Validation Error") {
             return res.json({
                 error: error,
                 message: error.message,
@@ -314,7 +334,7 @@ const increaseCart = async (req, res) => {
       const update = await Users.findOneAndUpdate({ _id: userId }, { cart: userCart }, { new: true });
       res.status(200).json(update);
     } catch (error) {
-        if (error && error.name === "ValidationError") {
+        if (error && error.name === "Validation Error") {
             return res.json({
                 error: error,
                 message: error.message,
@@ -346,7 +366,7 @@ const decreaseCart = async (req, res) => {
       const update = await Users.findOneAndUpdate({ _id: userId }, { cart: userCart }, { new: true });
       res.status(200).json(update);
     } catch (error) {
-        if (error && error.name === "ValidationError") {
+        if (error && error.name === "Validation Error") {
             return res.json({
                 error: error,
                 message: error.message,
@@ -368,7 +388,7 @@ const removeCart = async (req, res) => {
       const update = await Users.findOneAndUpdate({ _id: userId }, { cart: userCart }, { new: true });
       res.status(200).json(update);
     } catch (error) {
-        if (error && error.name === "ValidationError") {
+        if (error && error.name === "Validation Error") {
             return res.json({
                 error: error,
                 message: error.message,

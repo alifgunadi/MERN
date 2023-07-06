@@ -16,7 +16,7 @@
 
 const router = require('express').Router();
 const cartController = require('./controller');
-const { decodeToken } = require('../../middleware');
+// const { decodeToken } = require('../../middleware');
 
 
 router.get('/', cartController.getCartItem);
