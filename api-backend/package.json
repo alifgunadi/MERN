@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "start": "nodemon ./bin/www",
-    "test": "SET DEBUG=authorization-casl: * && nodemon ./bin/www"
+    "test": "SET DEBUG=authorization-casl: * && nodemon ./bin/www",
+    "vercel-build": "echo hello"
   },
   "dependencies": {
     "@casl/ability": "^6.4.0",
