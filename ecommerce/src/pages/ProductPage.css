@@ -2,12 +2,19 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 5px;
-    padding-top: 50px;
+    padding-top: 30px;
 }
 
-.product {
-    border-radius: 5px;
+.product--image_url {
+    border-radius: 20px;
     width: 550px;
     object-fit: cover;
+}
+
+.btn-add-to-cart {
+    border: none;
+    border-radius: 100px;
+    background-color: orange;
+    color: black;
+    font-weight: bold;
 }

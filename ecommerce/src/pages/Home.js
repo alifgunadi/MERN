@@ -19,7 +19,7 @@ function Home() {
 
     useEffect(() => {
         axios.get("/api/products/").then(({ data }) => dispatch(updateProducts(data)))
-    }, []);
+    });
 
   return (
     <Container className='container'>
